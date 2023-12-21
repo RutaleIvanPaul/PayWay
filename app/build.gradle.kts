@@ -60,4 +60,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-scalars:2.4.0")
     implementation("com.squareup.retrofit2:adapter-rxjava2:2.4.0")
     implementation("com.squareup.okhttp3:logging-interceptor:3.9.0")
+
+    //MPAndroid
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }
