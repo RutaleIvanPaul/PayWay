@@ -1,9 +1,22 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.Paywaytransactions" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+<resources>
+
+    <!-- Base application theme -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">#ffca00</item>
+        <item name="colorPrimaryDark">#334147</item>
+        <!-- Secondary brand color. -->
+        <item name="colorAccent">#334147</item>
+        <!-- Background color. -->
+        <item name="android:windowBackground">@color/colorBackground</item>
+        <!-- Text color. -->
+        <item name="android:textColor">@color/colorText</item>
     </style>
 
-    <style name="Theme.Paywaytransactions" parent="Base.Theme.Paywaytransactions" />
+    <!-- Colors -->
+    <color name="colorBackground">#fafafa</color>
+    <color name="colorText">#2a2b2f</color>
+    <color name="colorAccent">#334147</color>
+
 </resources>
+

@@ -3,6 +3,7 @@ package com.payway.paywaytransactions.app.dashboard.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
+import com.github.mikephil.charting.formatter.PercentFormatter
 import com.payway.paywaytransactions.App
 import com.payway.paywaytransactions.R
 import com.payway.paywaytransactions.app.dashboard.presenter.TransactionsViewModel
@@ -26,8 +27,29 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         transactionsViewModel.getTransactions()
-        transactionsViewModel.transactions.observe(this, { transactions ->
-            binding.transactiontxt.text = transactions.toString()
-        })
+        transactionsViewModel.piedata.observe(this) { piedata ->
+            binding.piechart.setData(piedata)
+            //pie chart
+            piedata.setValueFormatter(PercentFormatter())
+            piedata.setValueTextSize(11f)
+            binding.piechart.setUsePercentValues(true)
+            binding.piechart.description.isEnabled = false
+            binding.piechart.setExtraOffsets(5F, 10F, 5F, 5F)
+
+            binding.piechart.dragDecelerationFrictionCoef = 0.95f
+
+            binding.piechart.setTransparentCircleAlpha(110)
+
+            binding.piechart.holeRadius = 58f
+            binding.piechart.transparentCircleRadius = 61f
+
+            binding.piechart.setDrawCenterText(true)
+
+            binding.piechart.rotationAngle = 0.toFloat()
+            // enable rotation of the chart by touch
+            binding.piechart.isRotationEnabled = true
+            binding.piechart.isHighlightPerTapEnabled = true
+            binding.piechart.invalidate() // refresh
+        }
     }
 }
