@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import com.payway.paywaytransactions.App
 import com.payway.paywaytransactions.R
 import com.payway.paywaytransactions.databinding.ActivityMainBinding
@@ -23,23 +24,22 @@ class MainActivity : AppCompatActivity() {
 
         //Add toolbar widget to app bar
         setSupportActionBar(binding.toolbar)
-        // Inflate the custom icon layout
-        val customIconLayout = LayoutInflater.from(this).inflate(R.layout.filter_icon_layout, null)
-        // Find the ImageView in the custom layout
-        val customIcon = customIconLayout.findViewById<ImageView>(R.id.customFilterIcon)
-        // Set a click listener for custom filter icon
-        customIcon.setOnClickListener {
 
+        binding.customFilterIcon.setOnClickListener {
+            binding.filterCard.isVisible = !binding.filterCard.isVisible
         }
 
-        // Add the custom layout as the action layout for a menu item
-        binding.toolbar.addView(customIconLayout)
+        setupObservers()
 
     }
 
     override fun onResume() {
         super.onResume()
         transactionsViewModel.getTransactions()
+    }
+
+    private fun setupObservers() {
+        //Observe LineData
         transactionsViewModel.linedata.observe(this) { linedata ->
             binding.linechart.xAxis.valueFormatter = GetLineChartUseCase.DateAxisFormatter()
             binding.linechart.data = linedata
@@ -49,6 +49,26 @@ class MainActivity : AppCompatActivity() {
             binding.linechart.isHighlightPerTapEnabled = true
 
             binding.linechart.invalidate()//refresh
+        }
+
+        // Observe totalTransactions
+        transactionsViewModel.totalTransactions.observe(this) { totalTransactions ->
+            binding.totalTransactions.text = totalTransactions
+        }
+
+        // Observe totalAmount
+        transactionsViewModel.totalAmount.observe(this) { totalAmount ->
+            binding.totalAmount.text = totalAmount
+        }
+
+        // Observe withdrawAmount
+        transactionsViewModel.withdrawAmount.observe(this) { withdrawAmount ->
+            binding.withdrawAmount.text = withdrawAmount
+        }
+
+        // Observe depositAmount
+        transactionsViewModel.depositAmount.observe(this) { depositAmount ->
+            binding.depositAmount.text = depositAmount
         }
     }
 }
