@@ -5,11 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.ImageView
 import androidx.core.view.isVisible
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.payway.paywaytransactions.App
 import com.payway.paywaytransactions.R
 import com.payway.paywaytransactions.databinding.ActivityMainBinding
 import com.payway.paywaytransactions.databinding.FilterIconLayoutBinding
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetLineChartUseCase
+import com.payway.paywaytransactions.domain.dashboard.usecase.GetRadarChartUseCase
 
 class MainActivity : AppCompatActivity() {
 
@@ -55,6 +57,14 @@ class MainActivity : AppCompatActivity() {
         transactionsViewModel.pieData.observe(this){piedata ->
             binding.piechart.data = piedata
             binding.piechart.invalidate()
+        }
+
+        //Observe Radar Data
+        transactionsViewModel.radarData.observe(this){radardata ->
+            binding.radarchart.xAxis.valueFormatter = IndexAxisValueFormatter(GetRadarChartUseCase.categoryLabels)
+            binding.radarchart.yAxis.valueFormatter = GetRadarChartUseCase.LargeValueFormatter()
+            binding.radarchart.data = radardata
+            binding.radarchart.invalidate()
         }
 
         // Observe totalTransactions

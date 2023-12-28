@@ -349,21 +349,14 @@
                 <!-- Content of the First Card -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="400dp"
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
+                    <com.github.mikephil.charting.charts.RadarChart
+                        android:id="@+id/radarchart"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Big Headline Text 1"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Subtitle Text 1" />
+                        android:layout_height="match_parent"/>
                 </LinearLayout>
                 <!-- ... Additional content ... -->
             </com.google.android.material.card.MaterialCardView>
