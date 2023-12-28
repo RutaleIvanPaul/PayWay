@@ -5,6 +5,7 @@ import com.payway.paywaytransactions.app.dashboard.presenter.TransactionsViewMod
 import com.payway.paywaytransactions.data.dashboard.TransactionsAPI
 import com.payway.paywaytransactions.data.dashboard.repository.TransactionsRemoteDataSource
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetLineChartUseCase
+import com.payway.paywaytransactions.domain.dashboard.usecase.GetPieChartUseCase
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetTransactionsUseCase
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
@@ -24,8 +25,11 @@ class App: Application() {
     private val getLineChartUseCase: GetLineChartUseCase =
         GetLineChartUseCase()
 
+    private val getPieChartUseCase:GetPieChartUseCase =
+        GetPieChartUseCase()
+
     val transactionsViewModel: TransactionsViewModel =
-        TransactionsViewModel(getTransactionsUseCase,getLineChartUseCase)
+        TransactionsViewModel(getTransactionsUseCase,getLineChartUseCase,getPieChartUseCase)
 
     private fun createTransactionsAPI(): TransactionsAPI =
         createRetrofit().create(TransactionsAPI::class.java)

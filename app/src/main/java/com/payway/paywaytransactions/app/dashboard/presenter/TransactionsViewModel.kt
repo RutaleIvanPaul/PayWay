@@ -7,10 +7,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.PieData
 import com.payway.paywaytransactions.data.dashboard.model.MyResult
 import com.payway.paywaytransactions.data.dashboard.model.RemoteTransaction
 import com.payway.paywaytransactions.domain.dashboard.model.LineDefinition
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetLineChartUseCase
+import com.payway.paywaytransactions.domain.dashboard.usecase.GetPieChartUseCase
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetTransactionsUseCase
 import com.payway.paywaytransactions.domain.dashboard.util.FilterCriteria
 import com.payway.paywaytransactions.domainCore.decimalFormat
@@ -19,10 +21,14 @@ import kotlinx.coroutines.launch
 
 class TransactionsViewModel(
     private val getTransactionsUseCase: GetTransactionsUseCase,
-    private val getLineChartUseCase: GetLineChartUseCase
+    private val getLineChartUseCase: GetLineChartUseCase,
+    private val getPieChartUseCase: GetPieChartUseCase
 ) : ViewModel() {
     private val _linedata = MutableLiveData<LineData>()
     val linedata: LiveData<LineData> get() = _linedata
+
+    private val _pieData = MutableLiveData<PieData>()
+    val pieData:LiveData<PieData> get() = _pieData
 
     private val _totalTransactions = MutableLiveData<String>()
     val totalTransactions: LiveData<String> get() = _totalTransactions
@@ -44,6 +50,7 @@ class TransactionsViewModel(
                 is MyResult.Success -> {
                     //populate charts
                     getDefaultLineChart(result)
+                    getPieChart(result.data)
                 }
 
                 is MyResult.Error -> {
@@ -65,6 +72,10 @@ class TransactionsViewModel(
                 )
             )
         )
+    }
+
+    fun getPieChart(transactions: List<RemoteTransaction>){
+        _pieData.value = getPieChartUseCase.execute(transactions)
     }
 
     private fun summarise(transactions: List<RemoteTransaction>) {

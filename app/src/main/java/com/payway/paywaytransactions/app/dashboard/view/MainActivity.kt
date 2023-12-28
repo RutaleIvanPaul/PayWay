@@ -51,6 +51,12 @@ class MainActivity : AppCompatActivity() {
             binding.linechart.invalidate()//refresh
         }
 
+        //Observe PieData
+        transactionsViewModel.pieData.observe(this){piedata ->
+            binding.piechart.data = piedata
+            binding.piechart.invalidate()
+        }
+
         // Observe totalTransactions
         transactionsViewModel.totalTransactions.observe(this) { totalTransactions ->
             binding.totalTransactions.text = totalTransactions
