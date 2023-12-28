@@ -2,14 +2,14 @@ package com.payway.paywaytransactions.app.dashboard.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
-import com.github.mikephil.charting.formatter.PercentFormatter
+import android.view.LayoutInflater
+import android.widget.ImageView
+import androidx.core.view.isVisible
 import com.payway.paywaytransactions.App
 import com.payway.paywaytransactions.R
-import com.payway.paywaytransactions.app.dashboard.presenter.TransactionsViewModel
-import com.payway.paywaytransactions.app.dashboard.presenter.TransactionsViewModelFactory
 import com.payway.paywaytransactions.databinding.ActivityMainBinding
-import com.payway.paywaytransactions.domain.dashboard.usecase.GetTransactionsUseCase
+import com.payway.paywaytransactions.databinding.FilterIconLayoutBinding
+import com.payway.paywaytransactions.domain.dashboard.usecase.GetLineChartUseCase
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,34 +22,53 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //Add toolbar widget to app bar
+        setSupportActionBar(binding.toolbar)
+
+        binding.customFilterIcon.setOnClickListener {
+            binding.filterCard.isVisible = !binding.filterCard.isVisible
+        }
+
+        setupObservers()
+
     }
 
     override fun onResume() {
         super.onResume()
         transactionsViewModel.getTransactions()
-        transactionsViewModel.piedata.observe(this) { piedata ->
-            binding.piechart.setData(piedata)
-            //pie chart
-            piedata.setValueFormatter(PercentFormatter())
-            piedata.setValueTextSize(11f)
-            binding.piechart.setUsePercentValues(true)
-            binding.piechart.description.isEnabled = false
-            binding.piechart.setExtraOffsets(5F, 10F, 5F, 5F)
+    }
 
-            binding.piechart.dragDecelerationFrictionCoef = 0.95f
+    private fun setupObservers() {
+        //Observe LineData
+        transactionsViewModel.linedata.observe(this) { linedata ->
+            binding.linechart.xAxis.valueFormatter = GetLineChartUseCase.DateAxisFormatter()
+            binding.linechart.data = linedata
+            binding.linechart.setPinchZoom(true)
+            binding.linechart.setScaleEnabled(true)
+            binding.linechart.isHighlightPerDragEnabled = true
+            binding.linechart.isHighlightPerTapEnabled = true
 
-            binding.piechart.setTransparentCircleAlpha(110)
+            binding.linechart.invalidate()//refresh
+        }
 
-            binding.piechart.holeRadius = 58f
-            binding.piechart.transparentCircleRadius = 61f
+        // Observe totalTransactions
+        transactionsViewModel.totalTransactions.observe(this) { totalTransactions ->
+            binding.totalTransactions.text = totalTransactions
+        }
 
-            binding.piechart.setDrawCenterText(true)
+        // Observe totalAmount
+        transactionsViewModel.totalAmount.observe(this) { totalAmount ->
+            binding.totalAmount.text = totalAmount
+        }
 
-            binding.piechart.rotationAngle = 0.toFloat()
-            // enable rotation of the chart by touch
-            binding.piechart.isRotationEnabled = true
-            binding.piechart.isHighlightPerTapEnabled = true
-            binding.piechart.invalidate() // refresh
+        // Observe withdrawAmount
+        transactionsViewModel.withdrawAmount.observe(this) { withdrawAmount ->
+            binding.withdrawAmount.text = withdrawAmount
+        }
+
+        // Observe depositAmount
+        transactionsViewModel.depositAmount.observe(this) { depositAmount ->
+            binding.depositAmount.text = depositAmount
         }
     }
 }
