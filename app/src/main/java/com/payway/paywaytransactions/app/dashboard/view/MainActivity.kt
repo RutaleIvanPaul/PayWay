@@ -2,14 +2,13 @@ package com.payway.paywaytransactions.app.dashboard.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
-import com.github.mikephil.charting.formatter.PercentFormatter
+import android.view.LayoutInflater
+import android.widget.ImageView
 import com.payway.paywaytransactions.App
 import com.payway.paywaytransactions.R
-import com.payway.paywaytransactions.app.dashboard.presenter.TransactionsViewModel
-import com.payway.paywaytransactions.app.dashboard.presenter.TransactionsViewModelFactory
 import com.payway.paywaytransactions.databinding.ActivityMainBinding
-import com.payway.paywaytransactions.domain.dashboard.usecase.GetTransactionsUseCase
+import com.payway.paywaytransactions.databinding.FilterIconLayoutBinding
+import com.payway.paywaytransactions.domain.dashboard.usecase.GetLineChartUseCase
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,34 +21,34 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        //Add toolbar widget to app bar
+        setSupportActionBar(binding.toolbar)
+        // Inflate the custom icon layout
+        val customIconLayout = LayoutInflater.from(this).inflate(R.layout.filter_icon_layout, null)
+        // Find the ImageView in the custom layout
+        val customIcon = customIconLayout.findViewById<ImageView>(R.id.customFilterIcon)
+        // Set a click listener for custom filter icon
+        customIcon.setOnClickListener {
+
+        }
+
+        // Add the custom layout as the action layout for a menu item
+        binding.toolbar.addView(customIconLayout)
+
     }
 
     override fun onResume() {
         super.onResume()
         transactionsViewModel.getTransactions()
-        transactionsViewModel.piedata.observe(this) { piedata ->
-            binding.piechart.setData(piedata)
-            //pie chart
-            piedata.setValueFormatter(PercentFormatter())
-            piedata.setValueTextSize(11f)
-            binding.piechart.setUsePercentValues(true)
-            binding.piechart.description.isEnabled = false
-            binding.piechart.setExtraOffsets(5F, 10F, 5F, 5F)
+        transactionsViewModel.linedata.observe(this) { linedata ->
+            binding.linechart.xAxis.valueFormatter = GetLineChartUseCase.DateAxisFormatter()
+            binding.linechart.data = linedata
+            binding.linechart.setPinchZoom(true)
+            binding.linechart.setScaleEnabled(true)
+            binding.linechart.isHighlightPerDragEnabled = true
+            binding.linechart.isHighlightPerTapEnabled = true
 
-            binding.piechart.dragDecelerationFrictionCoef = 0.95f
-
-            binding.piechart.setTransparentCircleAlpha(110)
-
-            binding.piechart.holeRadius = 58f
-            binding.piechart.transparentCircleRadius = 61f
-
-            binding.piechart.setDrawCenterText(true)
-
-            binding.piechart.rotationAngle = 0.toFloat()
-            // enable rotation of the chart by touch
-            binding.piechart.isRotationEnabled = true
-            binding.piechart.isHighlightPerTapEnabled = true
-            binding.piechart.invalidate() // refresh
+            binding.linechart.invalidate()//refresh
         }
     }
 }

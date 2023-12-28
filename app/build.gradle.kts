@@ -55,12 +55,18 @@ dependencies {
     implementation("io.reactivex.rxjava2:rxkotlin:2.4.0")
 
     //retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.4.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.4.0")
-    implementation("com.squareup.retrofit2:converter-scalars:2.4.0")
-    implementation("com.squareup.retrofit2:adapter-rxjava2:2.4.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:3.9.0")
+    implementation("com.squareup.retrofit2:retrofit:2.6.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.6.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.6.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:3.12.0")
+
 
     //MPAndroid
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    //VModel Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
+
 }
