@@ -20,6 +20,7 @@ import com.payway.paywaytransactions.domain.dashboard.util.FilterCriteria
 import com.payway.paywaytransactions.domainCore.colorOptions
 import com.payway.paywaytransactions.domainCore.decimalFormat
 import kotlinx.coroutines.launch
+import java.util.Locale.Category
 import kotlin.random.Random
 
 
@@ -50,12 +51,33 @@ class TransactionsViewModel(
     private val _depositAmount = MutableLiveData<String>()
     val depositAmount: LiveData<String> get() = _depositAmount
 
+    //In Memory Hold of Transactions
+    //Should be improved with secondary storage
+    private var _transactions:List<RemoteTransaction> = listOf()
+
+    private val _distinctCategories = MutableLiveData<List<String>>()
+    val distinctCategories:LiveData<List<String>> get() = _distinctCategories
+
+    private val _distinctTypes = MutableLiveData<List<String>>()
+    val distinctTypes:LiveData<List<String>> get() = _distinctTypes
+
+    private val _seekBarMinMax = MutableLiveData<Pair<Double,Double>>()
+    val seekBarMinMax:MutableLiveData<Pair<Double,Double>> get() = _seekBarMinMax
+
 
     fun getTransactions() {
+        //If Local is empty
         viewModelScope.launch {
             val result = getTransactionsUseCase.execute()
             when (result) {
                 is MyResult.Success -> {
+                    _transactions = result.data
+                    //populate seek bars
+                    _seekBarMinMax.value = getSeekBarMinMaxValues(result.data)
+                    //populate categories spinner
+                    _distinctCategories.value = getDistinctCategories(result.data)
+                    //populate types spinner
+                    _distinctTypes.value = getDistinctTypes(result.data)
                     //populate charts
                     getDefaultLineChart(result)
                     getPieChart(result.data)
@@ -68,6 +90,43 @@ class TransactionsViewModel(
             }
         }
 
+    }
+
+    private fun getLabel(filterCriteria: FilterCriteria): String {
+        var label = ""
+        filterCriteria.type?.let {
+            label += "${it}s"
+        }
+        filterCriteria.minAmount?.let {
+            label += "Min Amount: $it "
+        }
+        filterCriteria.maxAmount?.let {
+            label += "Max Amount: $it "
+        }
+        filterCriteria.startDate?.let {
+            label += "Start Date: $it "
+        }
+        filterCriteria.endDate?.let {
+            label += "End Date: $it "
+        }
+        filterCriteria.categories?.let {
+            if (it.size > 0) {
+                label += "Category: "
+                it.forEach { category ->
+                    label += "$category "
+                }
+            }
+        }
+
+        return label
+    }
+
+    fun getFilteredTransactions(filterCriteria: FilterCriteria){
+        val filteredTransactions = filterCriteria.getFilteredData(_transactions)
+        val label = getLabel(filterCriteria)
+        getLineChart(filteredTransactions,label)
+        getPieChart(filteredTransactions)
+        getRadarChart(filteredTransactions)
     }
 
     fun getLineChart(transactions: List<RemoteTransaction>, label: String) {
@@ -108,7 +167,7 @@ class TransactionsViewModel(
                         "Deposit",
                         null,
                         null,
-                        null,
+                        arrayListOf(),
                         null,
                         null
                     ).getFilteredData(result.data),
@@ -120,7 +179,7 @@ class TransactionsViewModel(
                         "Withdraw",
                         null,
                         null,
-                        null,
+                        arrayListOf(),
                         null,
                         null
                     ).getFilteredData(result.data),
@@ -131,5 +190,13 @@ class TransactionsViewModel(
         )
     }
 
+    fun getDistinctCategories(transactions: List<RemoteTransaction>):List<String> =
+        transactions.map { it.Category }.distinct()
+
+    fun getDistinctTypes(transactions: List<RemoteTransaction>):List<String> =
+        transactions.map { it.Type }.distinct()
+
+    fun getSeekBarMinMaxValues(transactions: List<RemoteTransaction>):Pair<Double,Double> =
+        Pair(transactions.map { it.Amount }.min(),transactions.map { it.Amount }.max())
 
 }

@@ -16,13 +16,23 @@
         app:layout_constraintTop_toTopOf="parent"
         app:popupTheme="?attr/actionBarPopupTheme">
 
-        <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <ImageView
             android:id="@+id/customFilterIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="10dp"
+            android:src="@drawable/twotone_filter_alt_24"
+            app:layout_constraintStart_toEndOf="@+id/toolbar" />
+
+        <TextView
+            android:id="@+id/clearFilters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:visibility="gone"
+            android:text="CLEAR FILTERS"
             android:src="@drawable/twotone_filter_alt_24"
             app:layout_constraintStart_toEndOf="@+id/toolbar" />
 
@@ -47,7 +57,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -65,16 +75,36 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:weightSum="5"
+                        app:layout_constraintTop_toBottomOf="@id/typeSpinner">
 
-                        <!-- Date Range Picker -->
-                        <DatePicker
-                            android:id="@+id/dateRangePicker"
+                        <!-- Label for Min Amount -->
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="Start Date: " />
+
+                        <Button
+                            android:id="@+id/startDateButton"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
-                            android:calendarViewShown="true"
-                            android:datePickerMode="calendar" />
+                            />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="End Date: " />
+
+                        <Button
+                            android:id="@+id/endDateButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            />
                     </LinearLayout>
 
                     <!-- Transaction Type Dropdown -->
@@ -83,15 +113,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="16dp"
+                        android:prompt="@string/spinner_prompt"
                         app:layout_constraintTop_toBottomOf="@id/datepickers" />
 
-                    <!-- Amount Slider -->
                     <!-- Min and Max Amount SeekBars -->
                     <LinearLayout
                         android:id="@+id/seekBars"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="5dp"
                         android:orientation="horizontal"
                         android:weightSum="5"
                         app:layout_constraintTop_toBottomOf="@id/typeSpinner">
@@ -127,22 +157,52 @@
                             android:max="100" />
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:id="@+id/seekBarValues"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        android:weightSum="1"
+                        app:layout_constraintTop_toBottomOf="@id/typeSpinner">
+
+                        <TextView
+                            android:id="@+id/minAmountSeekBarValue"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="Min" />
+
+                        <TextView
+                            android:id="@+id/maxAmountSeekBarValue"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="Max" />
+
+                    </LinearLayout>
+
                     <!-- Categories Dropdown -->
-                    <Spinner
+                    <MultiAutoCompleteTextView
                         android:id="@+id/categoriesSpinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/seekBars" />
+                        android:hint="Select one or more Categories"
+                        android:completionThreshold="0"
+                         />
+
 
                     <!-- Apply Button -->
                     <Button
+                        android:id="@+id/applyFiltersButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="16dp"
                         android:text="Apply"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/dateRangePicker" />
+                        app:layout_constraintTop_toBottomOf="@id/categoriesSpinner" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
