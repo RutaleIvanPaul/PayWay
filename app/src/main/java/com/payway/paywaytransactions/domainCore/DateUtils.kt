@@ -9,6 +9,8 @@ import java.util.Locale
 object DateFormatter {
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
+    val displayDateFormat = SimpleDateFormat("dd MMM yyy", Locale.getDefault())
+
     fun formatStringToDate(dateString: String): Date {
         return dateString.let {
             try {

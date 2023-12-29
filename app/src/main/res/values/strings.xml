@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PayWay Transactions</string>
+    <string name="spinner_prompt">--Select a Type--</string>
 </resources>

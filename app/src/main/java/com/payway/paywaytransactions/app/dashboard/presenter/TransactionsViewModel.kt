@@ -17,9 +17,10 @@ import com.payway.paywaytransactions.domain.dashboard.usecase.GetPieChartUseCase
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetRadarChartUseCase
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetTransactionsUseCase
 import com.payway.paywaytransactions.domain.dashboard.util.FilterCriteria
-import com.payway.paywaytransactions.domainCore.colorOptions
+import com.payway.paywaytransactions.domainCore.ColorProvider
 import com.payway.paywaytransactions.domainCore.decimalFormat
 import kotlinx.coroutines.launch
+import java.util.Locale.Category
 import kotlin.random.Random
 
 
@@ -50,24 +51,90 @@ class TransactionsViewModel(
     private val _depositAmount = MutableLiveData<String>()
     val depositAmount: LiveData<String> get() = _depositAmount
 
+    //In Memory Hold of Transactions
+    //Should be improved with secondary storage
+    private var _transactions:List<RemoteTransaction> = listOf()
+
+    private val _distinctCategories = MutableLiveData<List<String>>()
+    val distinctCategories:LiveData<List<String>> get() = _distinctCategories
+
+    private val _distinctTypes = MutableLiveData<List<String>>()
+    val distinctTypes:LiveData<List<String>> get() = _distinctTypes
+
+    private val _seekBarMinMax = MutableLiveData<Pair<Double,Double>>()
+    val seekBarMinMax:MutableLiveData<Pair<Double,Double>> get() = _seekBarMinMax
+
 
     fun getTransactions() {
-        viewModelScope.launch {
-            val result = getTransactionsUseCase.execute()
-            when (result) {
-                is MyResult.Success -> {
-                    //populate charts
-                    getDefaultLineChart(result)
-                    getPieChart(result.data)
-                    getRadarChart(result.data)
+        if (_transactions.isEmpty()) {
+            //If Local is empty
+            viewModelScope.launch {
+                val result = getTransactionsUseCase.execute()
+                when (result) {
+                    is MyResult.Success -> {
+                        populateDefaultScreen(result.data)
+                    }
+                    is MyResult.Error -> {
+                        result.exception.message?.let { Log.d("Transactions", it) }
+                    }
                 }
+            }
+        }
+        else{
+            populateDefaultScreen(_transactions)
+        }
 
-                is MyResult.Error -> {
-                    result.exception.message?.let { Log.d("Transactions", it) }
+    }
+
+    private fun populateDefaultScreen(transactions: List<RemoteTransaction>) {
+        _transactions = transactions
+        //populate seek bars
+        _seekBarMinMax.value = getSeekBarMinMaxValues(transactions)
+        //populate categories spinner
+        _distinctCategories.value = getDistinctCategories(transactions)
+        //populate types spinner
+        _distinctTypes.value = getDistinctTypes(transactions)
+        //populate charts
+        getDefaultLineChart(transactions)
+        getPieChart(transactions)
+        getRadarChart(transactions)
+    }
+
+    private fun getLabel(filterCriteria: FilterCriteria): String {
+        var label = ""
+        filterCriteria.type?.let {
+            label += "${it}s"
+        }
+        filterCriteria.minAmount?.let {
+            label += "Min Amount: ${decimalFormat.format(it)} "
+        }
+        filterCriteria.maxAmount?.let {
+            label += "Max Amount: ${decimalFormat.format(it)} "
+        }
+        filterCriteria.startDate?.let {
+            label += "Start Date: $it "
+        }
+        filterCriteria.endDate?.let {
+            label += "End Date: $it "
+        }
+        filterCriteria.categories?.let {
+            if (it.size > 0) {
+                label += "Category: "
+                it.forEach { category ->
+                    label += "$category "
                 }
             }
         }
 
+        return label
+    }
+
+    fun getFilteredTransactions(filterCriteria: FilterCriteria){
+        val filteredTransactions = filterCriteria.getFilteredData(_transactions)
+        val label = getLabel(filterCriteria)
+        getLineChart(filteredTransactions,label)
+        getPieChart(filteredTransactions)
+        getRadarChart(filteredTransactions)
     }
 
     fun getLineChart(transactions: List<RemoteTransaction>, label: String) {
@@ -76,7 +143,7 @@ class TransactionsViewModel(
             listOf(
                 LineDefinition(
                     transactions,
-                    colorOptions.shuffled(Random).get(0),
+                    ColorProvider.getNextColor(),
                     label
                 )
             )
@@ -99,8 +166,8 @@ class TransactionsViewModel(
 
     }
 
-    private fun getDefaultLineChart(result: MyResult.Success<List<RemoteTransaction>>) {
-        summarise(result.data)
+    private fun getDefaultLineChart(transactions: List<RemoteTransaction>) {
+        summarise(transactions)
         _linedata.value = getLineChartUseCase.execute(
             listOf(
                 LineDefinition(
@@ -108,11 +175,11 @@ class TransactionsViewModel(
                         "Deposit",
                         null,
                         null,
-                        null,
+                        arrayListOf(),
                         null,
                         null
-                    ).getFilteredData(result.data),
-                    colorOptions.shuffled(Random).get(0),
+                    ).getFilteredData(transactions),
+                    ColorProvider.getNextColor(),
                     "Deposits"
                 ),
                 LineDefinition(
@@ -120,16 +187,24 @@ class TransactionsViewModel(
                         "Withdraw",
                         null,
                         null,
-                        null,
+                        arrayListOf(),
                         null,
                         null
-                    ).getFilteredData(result.data),
-                    colorOptions.shuffled(Random).get(0),
+                    ).getFilteredData(transactions),
+                    ColorProvider.getNextColor(),
                     "Withdraws"
                 )
             )
         )
     }
 
+    fun getDistinctCategories(transactions: List<RemoteTransaction>):List<String> =
+        transactions.map { it.Category }.distinct()
+
+    fun getDistinctTypes(transactions: List<RemoteTransaction>):List<String> =
+        transactions.map { it.Type }.distinct()
+
+    fun getSeekBarMinMaxValues(transactions: List<RemoteTransaction>):Pair<Double,Double> =
+        Pair(transactions.map { it.Amount }.min(),transactions.map { it.Amount }.max())
 
 }
