@@ -17,7 +17,7 @@ import com.payway.paywaytransactions.domain.dashboard.usecase.GetPieChartUseCase
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetRadarChartUseCase
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetTransactionsUseCase
 import com.payway.paywaytransactions.domain.dashboard.util.FilterCriteria
-import com.payway.paywaytransactions.domainCore.colorOptions
+import com.payway.paywaytransactions.domainCore.ColorProvider
 import com.payway.paywaytransactions.domainCore.decimalFormat
 import kotlinx.coroutines.launch
 import java.util.Locale.Category
@@ -66,30 +66,38 @@ class TransactionsViewModel(
 
 
     fun getTransactions() {
-        //If Local is empty
-        viewModelScope.launch {
-            val result = getTransactionsUseCase.execute()
-            when (result) {
-                is MyResult.Success -> {
-                    _transactions = result.data
-                    //populate seek bars
-                    _seekBarMinMax.value = getSeekBarMinMaxValues(result.data)
-                    //populate categories spinner
-                    _distinctCategories.value = getDistinctCategories(result.data)
-                    //populate types spinner
-                    _distinctTypes.value = getDistinctTypes(result.data)
-                    //populate charts
-                    getDefaultLineChart(result)
-                    getPieChart(result.data)
-                    getRadarChart(result.data)
-                }
-
-                is MyResult.Error -> {
-                    result.exception.message?.let { Log.d("Transactions", it) }
+        if (_transactions.isEmpty()) {
+            //If Local is empty
+            viewModelScope.launch {
+                val result = getTransactionsUseCase.execute()
+                when (result) {
+                    is MyResult.Success -> {
+                        populateDefaultScreen(result.data)
+                    }
+                    is MyResult.Error -> {
+                        result.exception.message?.let { Log.d("Transactions", it) }
+                    }
                 }
             }
         }
+        else{
+            populateDefaultScreen(_transactions)
+        }
 
+    }
+
+    private fun populateDefaultScreen(transactions: List<RemoteTransaction>) {
+        _transactions = transactions
+        //populate seek bars
+        _seekBarMinMax.value = getSeekBarMinMaxValues(transactions)
+        //populate categories spinner
+        _distinctCategories.value = getDistinctCategories(transactions)
+        //populate types spinner
+        _distinctTypes.value = getDistinctTypes(transactions)
+        //populate charts
+        getDefaultLineChart(transactions)
+        getPieChart(transactions)
+        getRadarChart(transactions)
     }
 
     private fun getLabel(filterCriteria: FilterCriteria): String {
@@ -98,10 +106,10 @@ class TransactionsViewModel(
             label += "${it}s"
         }
         filterCriteria.minAmount?.let {
-            label += "Min Amount: $it "
+            label += "Min Amount: ${decimalFormat.format(it)} "
         }
         filterCriteria.maxAmount?.let {
-            label += "Max Amount: $it "
+            label += "Max Amount: ${decimalFormat.format(it)} "
         }
         filterCriteria.startDate?.let {
             label += "Start Date: $it "
@@ -135,7 +143,7 @@ class TransactionsViewModel(
             listOf(
                 LineDefinition(
                     transactions,
-                    colorOptions.shuffled(Random).get(0),
+                    ColorProvider.getNextColor(),
                     label
                 )
             )
@@ -158,8 +166,8 @@ class TransactionsViewModel(
 
     }
 
-    private fun getDefaultLineChart(result: MyResult.Success<List<RemoteTransaction>>) {
-        summarise(result.data)
+    private fun getDefaultLineChart(transactions: List<RemoteTransaction>) {
+        summarise(transactions)
         _linedata.value = getLineChartUseCase.execute(
             listOf(
                 LineDefinition(
@@ -170,8 +178,8 @@ class TransactionsViewModel(
                         arrayListOf(),
                         null,
                         null
-                    ).getFilteredData(result.data),
-                    colorOptions.shuffled(Random).get(0),
+                    ).getFilteredData(transactions),
+                    ColorProvider.getNextColor(),
                     "Deposits"
                 ),
                 LineDefinition(
@@ -182,8 +190,8 @@ class TransactionsViewModel(
                         arrayListOf(),
                         null,
                         null
-                    ).getFilteredData(result.data),
-                    colorOptions.shuffled(Random).get(0),
+                    ).getFilteredData(transactions),
+                    ColorProvider.getNextColor(),
                     "Withdraws"
                 )
             )

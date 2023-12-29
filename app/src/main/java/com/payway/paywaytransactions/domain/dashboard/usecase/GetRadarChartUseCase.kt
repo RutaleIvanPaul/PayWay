@@ -7,7 +7,7 @@ import com.github.mikephil.charting.data.RadarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet
 import com.payway.paywaytransactions.data.dashboard.model.RemoteTransaction
-import com.payway.paywaytransactions.domainCore.colorOptions
+import com.payway.paywaytransactions.domainCore.ColorProvider
 import kotlin.random.Random
 
 class GetRadarChartUseCase {
@@ -42,14 +42,14 @@ class GetRadarChartUseCase {
         //style and setup radar chart
         val radarDataSetDeposit = RadarDataSet(radarEntriesDeposit, "Deposits")
         radarDataSetDeposit.setDrawValues(false)
-        val depositsColor = colorOptions.shuffled(Random).get(0)
+        val depositsColor = ColorProvider.getNextColor()
         radarDataSetDeposit.color = depositsColor
         radarDataSetDeposit.fillColor = depositsColor
         radarDataSetDeposit.valueTextSize = 10f
 
         val radarDataSetWithdraw = RadarDataSet(radarEntriesWithdraw, "Withdraws")
         radarDataSetWithdraw.setDrawValues(false)
-        val withdrawsColor = colorOptions.shuffled(Random).get(0)
+        val withdrawsColor = ColorProvider.getNextColor()
         radarDataSetWithdraw.color = withdrawsColor
         radarDataSetWithdraw.fillColor = withdrawsColor
         radarDataSetWithdraw.valueTextSize = 10f

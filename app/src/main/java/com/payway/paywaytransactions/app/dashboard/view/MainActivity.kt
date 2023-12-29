@@ -24,6 +24,7 @@ import com.payway.paywaytransactions.domain.dashboard.usecase.GetLineChartUseCas
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetRadarChartUseCase
 import com.payway.paywaytransactions.domain.dashboard.util.FilterCriteria
 import com.payway.paywaytransactions.domainCore.DateFormatter
+import com.payway.paywaytransactions.domainCore.decimalFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -65,8 +66,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.clearFilters.setOnClickListener {
-            binding.clearFilters.visibility = View.GONE
             //reset filters and fetch all data
+            binding.startDateButton.text = ""
+            binding.endDateButton.text = ""
+            binding.typeSpinner.setSelection(0)
+            binding.minAmountSeekBar.progress = 0
+            binding.maxAmountSeekBar.progress = 0
+            binding.categoriesSpinner.text.clear()
+            binding.categoriesSpinner.clearFocus()
+
+            binding.clearFilters.visibility = View.GONE
+
+            transactionsViewModel.getTransactions()
         }
 
         binding.applyFiltersButton.setOnClickListener {
@@ -170,7 +181,7 @@ class MainActivity : AppCompatActivity() {
 
             binding.minAmountSeekBar.setOnSeekBarChangeListener(object:SeekBar.OnSeekBarChangeListener{
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, p2: Boolean) {
-                    binding.minAmountSeekBarValue.text = progress.toString()
+                    binding.minAmountSeekBarValue.text = decimalFormat.format(progress+minmax.first)
                 }
 
                 override fun onStartTrackingTouch(p0: SeekBar?) {
@@ -178,14 +189,14 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    filterCriteria.minAmount = seekBar?.progress?.toDouble()
+                    filterCriteria.minAmount = seekBar?.progress?.plus(minmax.first)?.toDouble()
                 }
 
             })
 
             binding.maxAmountSeekBar.setOnSeekBarChangeListener(object:SeekBar.OnSeekBarChangeListener{
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, p2: Boolean) {
-                    binding.maxAmountSeekBarValue.text = progress.toString()
+                    binding.maxAmountSeekBarValue.text = decimalFormat.format(progress+minmax.first)
                 }
 
                 override fun onStartTrackingTouch(p0: SeekBar?) {
@@ -193,7 +204,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    filterCriteria.maxAmount = seekBar?.progress?.toDouble()
+                    filterCriteria.maxAmount = seekBar?.progress?.plus(minmax.first)?.toDouble()
                 }
 
             })

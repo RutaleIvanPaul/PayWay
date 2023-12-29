@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground">
@@ -33,6 +34,7 @@
             android:layout_marginEnd="10dp"
             android:visibility="gone"
             android:text="CLEAR FILTERS"
+            android:textSize="10sp"
             android:src="@drawable/twotone_filter_alt_24"
             app:layout_constraintStart_toEndOf="@+id/toolbar" />
 
@@ -54,10 +56,10 @@
             <!-- Filter Card (Initially Hidden) -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/filterCard"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -74,7 +76,7 @@
                         android:id="@+id/datepickers"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="10dp"
                         android:orientation="horizontal"
                         android:weightSum="5"
                         app:layout_constraintTop_toBottomOf="@id/typeSpinner">
@@ -90,8 +92,7 @@
                             android:id="@+id/startDateButton"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            />
+                            android:layout_weight="2" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -103,8 +104,7 @@
                             android:id="@+id/endDateButton"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="2"
-                            />
+                            android:layout_weight="2" />
                     </LinearLayout>
 
                     <!-- Transaction Type Dropdown -->
@@ -112,7 +112,7 @@
                         android:id="@+id/typeSpinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="16dp"
+                        android:layout_marginBottom="10dp"
                         android:prompt="@string/spinner_prompt"
                         app:layout_constraintTop_toBottomOf="@id/datepickers" />
 
@@ -122,28 +122,26 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
-                        android:orientation="horizontal"
-                        android:weightSum="5"
+                        android:orientation="vertical"
                         app:layout_constraintTop_toBottomOf="@id/typeSpinner">
 
                         <!-- Label for Min Amount -->
                         <TextView
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
                             android:text="Min" />
 
                         <!-- Min Amount SeekBar -->
                         <SeekBar
                             android:id="@+id/minAmountSeekBar"
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
                             android:layout_weight="2"
                             android:max="100" />
 
                         <TextView
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.5"
                             android:text="Max" />
@@ -151,9 +149,8 @@
                         <!-- Max Amount SeekBar -->
                         <SeekBar
                             android:id="@+id/maxAmountSeekBar"
-                            android:layout_width="0dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="2"
                             android:max="100" />
                     </LinearLayout>
 
@@ -188,9 +185,9 @@
                         android:id="@+id/categoriesSpinner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Select one or more Categories"
+                        android:layout_marginBottom="10dp"
                         android:completionThreshold="0"
-                         />
+                        android:hint="Select one or more Categories" />
 
 
                     <!-- Apply Button -->
@@ -199,7 +196,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
                         android:text="Apply"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/categoriesSpinner" />

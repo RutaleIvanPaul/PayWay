@@ -5,7 +5,7 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.payway.paywaytransactions.data.dashboard.model.RemoteTransaction
-import com.payway.paywaytransactions.domainCore.colorOptions
+import com.payway.paywaytransactions.domainCore.ColorProvider
 import kotlin.random.Random
 
 class GetPieChartUseCase {
@@ -31,7 +31,7 @@ class GetPieChartUseCase {
         // Customize colors as needed
         // Randomly select colors from the colorOptions list
         val random = Random
-        val selectedColors = colorOptions.shuffled(random).take(pieEntries.size)
+        val selectedColors = ColorProvider.getColors(pieEntries.size)
 
         dataSet.colors = selectedColors
 
