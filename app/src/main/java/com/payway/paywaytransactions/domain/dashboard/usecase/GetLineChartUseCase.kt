@@ -11,7 +11,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class GetLineChartUseCase {
+class GetLineChartUseCase(
+    private val lineDataSetFactory: LineDataSetFactory
+) {
     fun execute(lineDefinitions: List<LineDefinition>): LineData {
         val lineDataSets = mutableListOf<LineDataSet>()
 
@@ -26,7 +28,10 @@ class GetLineChartUseCase {
 
             val entries = entriesMap.entries.map { Entry(it.key, it.value) }
 
-            val lineDataSet = LineDataSet(entries, lineDefinition.label)
+//            val lineDataSet = LineDataSet(entries, lineDefinition.label)
+            val lineDataSet = lineDataSetFactory.createLineDataSet(entries,lineDefinition.label)
+//            lineDataSet.values = entries
+//            lineDataSet.label = lineDefinition.label
             lineDataSet.color = lineDefinition.color
             lineDataSet.setDrawValues(false)
             lineDataSets.add(lineDataSet)
@@ -42,4 +47,15 @@ class GetLineChartUseCase {
             return dateFormat.format(Date(value.toLong()))
         }
     }
+
+    interface LineDataSetFactory {
+        fun createLineDataSet(yVals:List<Entry>,label:String): LineDataSet
+    }
+
+    class DefaultLineDataSetFactory : LineDataSetFactory {
+        override fun createLineDataSet(yVals: List<Entry>, label: String): LineDataSet {
+            return LineDataSet(yVals,label)
+        }
+    }
+
 }

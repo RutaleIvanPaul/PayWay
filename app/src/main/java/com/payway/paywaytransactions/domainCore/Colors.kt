@@ -6,36 +6,36 @@ object ColorProvider {
     val colorOptions  = listOf(
         Color.BLUE, Color.GREEN, Color.RED, Color.CYAN,
         Color.MAGENTA,
-        Color.parseColor("#FF5733"), // Vivid Orange
-        Color.parseColor("#FFC300"), // Vivid Yellow
-        Color.parseColor("#36D7B7"), // Teal
-        Color.parseColor("#3498DB"), // Dodger Blue
-        Color.parseColor("#9B59B6"), // Amethyst
-        Color.parseColor("#E74C3C"), // Alizarin Crimson
-        Color.parseColor("#1ABC9C"), // Turquoise
-        Color.parseColor("#F39C12"), // Orange
-        Color.parseColor("#2980B9"), // Belize Hole
-        Color.parseColor("#8E44AD"), // Wisteria
-        Color.parseColor("#C0392B"), // Pomegranate
-        Color.parseColor("#27AE60"), // Nephritis
-        Color.parseColor("#D35400"), // Pumpkin
-        Color.parseColor("#2C3E50"), // Midnight Blue
-        Color.parseColor("#F1C40F"), // Sunflower Yellow
-        Color.parseColor("#E74C3C"), // Light Coral
-        Color.parseColor("#3498DB"), // Dodger Blue (2nd)
-        Color.parseColor("#E67E22"), // Carrot Orange
-        Color.parseColor("#2ECC71"), // Emerald Green
-        Color.parseColor("#8E44AD"), // Amethyst (2nd)
-        Color.parseColor("#F39C12"), // Yellow Orange
-        Color.parseColor("#16A085"), // Green Sea
-        Color.parseColor("#E74C3C"), // Indian Red
-        Color.parseColor("#3498DB"), // Azure
-        Color.parseColor("#27AE60"), // Shamrock Green
-        Color.parseColor("#9B59B6"), // Medium Purple
-        Color.parseColor("#C0392B"), // Mahogany
-        Color.parseColor("#E67E22"), // Squash
-        Color.parseColor("#1ABC9C"), // Medium Turquoise
-        Color.parseColor("#F1C40F")  // Marigold Yellow
+        -1752325,     // Vivid Orange
+        -746171,      // Vivid Yellow
+        -14349113,    // Teal
+        -16724992,    // Dodger Blue
+        -11558159,    // Amethyst
+        -14866005,    // Alizarin Crimson
+        -1417668,     // Turquoise
+        -913536,      // Orange
+        -10011977,    // Belize Hole
+        -913564,      // Wisteria
+        -7403521,     // Pomegranate
+        -13755792,    // Nephritis
+        -5618656,     // Pumpkin
+        -16777216,    // Midnight Blue
+        -196576,      // Sunflower Yellow
+        -14866005,    // Light Coral
+        -16724992,    // Dodger Blue (2nd)
+        -16453611,    // Carrot Orange
+        -15000705,    // Emerald Green
+        -14066048,    // Amethyst (2nd)
+        -7453525,     // Yellow Orange
+        -13581421,    // Green Sea
+        -14866005,    // Indian Red
+        -16724992,    // Azure
+        -1417669,     // Shamrock Green
+        -9845137,     // Medium Purple
+        -746117,      // Mahogany
+        -4613387,     // Squash
+        -14128111,    // Medium Turquoise
+        -1842205      // Marigold Yellow
     )
 
     // Shuffle the list of colors to always get a fresh set
