@@ -1,6 +1,5 @@
 package com.payway.paywaytransactions.app.dashboard.presenter
 
-import android.graphics.Color
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,10 +17,8 @@ import com.payway.paywaytransactions.domain.dashboard.usecase.GetRadarChartUseCa
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetTransactionsUseCase
 import com.payway.paywaytransactions.domain.dashboard.util.FilterCriteria
 import com.payway.paywaytransactions.domainCore.ColorProvider
-import com.payway.paywaytransactions.domainCore.decimalFormat
+import com.payway.paywaytransactions.domainCore.commaFormat
 import kotlinx.coroutines.launch
-import java.util.Locale.Category
-import kotlin.random.Random
 
 
 class TransactionsViewModel(
@@ -103,28 +100,26 @@ class TransactionsViewModel(
     private fun getLabel(filterCriteria: FilterCriteria): String {
         var label = ""
         filterCriteria.type?.let {
-            label += "${it}s"
+            label += "Type||"
         }
         filterCriteria.minAmount?.let {
-            label += "Min Amount: ${decimalFormat.format(it)} "
+            label += "Min-Amnt||"
         }
         filterCriteria.maxAmount?.let {
-            label += "Max Amount: ${decimalFormat.format(it)} "
+            label += "Max-Amnt||"
         }
         filterCriteria.startDate?.let {
-            label += "Start Date: $it "
+            label += "Start-Date||"
         }
         filterCriteria.endDate?.let {
-            label += "End Date: $it "
+            label += "End-Date||"
         }
         filterCriteria.categories?.let {
-            if (it.size > 0) {
-                label += "Category: "
-                it.forEach { category ->
-                    label += "$category "
-                }
-            }
+            label += "Category||"
         }
+
+        val splits = label.split("||")
+        label = if(splits.size == 2) splits.get(0) else label
 
         return label
     }
@@ -159,10 +154,10 @@ class TransactionsViewModel(
     }
 
     private fun summarise(transactions: List<RemoteTransaction>) {
-        _totalTransactions.value = decimalFormat.format(transactions.size)
-        _totalAmount.value = decimalFormat.format(transactions.sumOf { it.Amount })
-        _depositAmount.value = decimalFormat.format(transactions.filter { it.Type == "Deposit" }.sumOf { it.Amount })
-        _withdrawAmount.value = decimalFormat.format(transactions.filter { it.Type == "Withdraw" }.sumOf { it.Amount })
+        _totalTransactions.value = commaFormat.format(transactions.size)
+        _totalAmount.value = commaFormat.format(transactions.sumOf { it.Amount })
+        _depositAmount.value = commaFormat.format(transactions.filter { it.Type == "Deposit" }.sumOf { it.Amount })
+        _withdrawAmount.value = commaFormat.format(transactions.filter { it.Type == "Withdraw" }.sumOf { it.Amount })
 
     }
 

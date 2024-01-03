@@ -2,4 +2,16 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Main Colors -->
+    <color name="colorDodgerBlue">#1E90FF</color>
+    <color name="colorEmeraldGreen">#008000</color>
+    <color name="colorVividOrange">#FF4500</color>
+    <color name="colorSunflowerYellow">#FFDA12</color>
+
+    <!-- Lighter Transparent Versions -->
+    <color name="colorDodgerBlueTransparent">#801E90FF</color>
+    <color name="colorEmeraldGreenTransparent">#80008000</color>
+    <color name="colorVividOrangeTransparent">#80FF4500</color>
+    <color name="colorSunflowerYellowTransparent">#80FFDA12</color>
 </resources>
