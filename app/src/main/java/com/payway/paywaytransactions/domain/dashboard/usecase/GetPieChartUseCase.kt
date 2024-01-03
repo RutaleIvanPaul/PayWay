@@ -6,8 +6,10 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.payway.paywaytransactions.data.dashboard.model.RemoteTransaction
 import com.payway.paywaytransactions.domainCore.ColorProvider
+import com.payway.paywaytransactions.domainCore.decimalFormat
 import kotlin.random.Random
 
 class GetPieChartUseCase(
@@ -31,10 +33,13 @@ class GetPieChartUseCase(
         }
 
         // Create a PieDataSet
-        val dataSet = pieDataSetFactory.createPieDataSet(pieEntries,"Category Distribution by Amount")
-        // Customize colors as needed
+        val dataSet = pieDataSetFactory.createPieDataSet(pieEntries,"")
+        dataSet.setValueFormatter(object : ValueFormatter() {
+            override fun getFormattedValue(value: Float): String {
+                return "${decimalFormat.format(value)}%" // Attach % to displayed values
+            }
+        })
         // Randomly select colors from the colorOptions list
-        val random = Random
         val selectedColors = ColorProvider.getColors(pieEntries.size)
 
         dataSet.colors = selectedColors

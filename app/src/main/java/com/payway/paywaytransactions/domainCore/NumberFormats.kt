@@ -2,4 +2,5 @@ package com.payway.paywaytransactions.domainCore
 
 import java.text.DecimalFormat
 
-val decimalFormat = DecimalFormat("#,###")
+val commaFormat = DecimalFormat("#,###")
+val decimalFormat = DecimalFormat("##.##")

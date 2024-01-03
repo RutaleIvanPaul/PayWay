@@ -1,38 +1,41 @@
 package com.payway.paywaytransactions.app.dashboard.view
 
 import android.app.DatePickerDialog
+import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.DatePicker
-import android.widget.ImageView
 import android.widget.MultiAutoCompleteTextView
 import android.widget.SeekBar
 import androidx.core.view.isVisible
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.payway.paywaytransactions.App
 import com.payway.paywaytransactions.R
 import com.payway.paywaytransactions.databinding.ActivityMainBinding
-import com.payway.paywaytransactions.databinding.FilterIconLayoutBinding
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetLineChartUseCase
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetRadarChartUseCase
 import com.payway.paywaytransactions.domain.dashboard.util.FilterCriteria
 import com.payway.paywaytransactions.domainCore.DateFormatter
+import com.payway.paywaytransactions.domainCore.commaFormat
 import com.payway.paywaytransactions.domainCore.decimalFormat
-import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
-import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding:ActivityMainBinding
+    private lateinit var overlayDialog: Dialog
+
     val app = App.getInstance()
     val transactionsViewModel = app.transactionsViewModel
 
@@ -45,6 +48,11 @@ class MainActivity : AppCompatActivity() {
 
         //Add toolbar widget to app bar
         setSupportActionBar(binding.toolbar)
+
+        // Initialize the overlay dialog
+        overlayDialog = Dialog(this)
+        overlayDialog.setContentView(R.layout.overlay_layout)
+        overlayDialog.setCancelable(false)
 
         setupClickListeners()
         setupObservers()
@@ -82,6 +90,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.applyFiltersButton.setOnClickListener {
             binding.clearFilters.visibility = View.VISIBLE
+            binding.filterCard.visibility = View.GONE
             //use filter criteria to select data
             //get selected categories
             filterCriteria.categories.addAll(binding.categoriesSpinner.text.toString()
@@ -93,6 +102,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        showOverlay()
         transactionsViewModel.getTransactions()
     }
 
@@ -105,6 +115,10 @@ class MainActivity : AppCompatActivity() {
             binding.linechart.setScaleEnabled(true)
             binding.linechart.isHighlightPerDragEnabled = true
             binding.linechart.isHighlightPerTapEnabled = true
+            binding.linechart.description.text = ""
+            binding.linechart.animateX(1000 )
+
+            hideOverlay()
 
             binding.linechart.invalidate()//refresh
         }
@@ -112,6 +126,28 @@ class MainActivity : AppCompatActivity() {
         //Observe PieData
         transactionsViewModel.pieData.observe(this){piedata ->
             binding.piechart.data = piedata
+            binding.piechart.description.text = ""
+            binding.piechart.setDrawEntryLabels(false)
+            binding.piechart.legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+            binding.piechart.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+            binding.piechart.legend.orientation = Legend.LegendOrientation.VERTICAL
+            binding.piechart.legend.isWordWrapEnabled = true
+            binding.piechart.setOnChartValueSelectedListener(object:OnChartValueSelectedListener{
+                override fun onValueSelected(e: Entry?, h: Highlight?) {
+                    e.let {
+                        binding.piechart.centerText = "${(e as PieEntry).label} \n " +
+                                "${decimalFormat.format((e as PieEntry).value)}%"
+                        binding.piechart.invalidate()
+                    }
+                }
+
+                override fun onNothingSelected() {
+                    binding.piechart.centerText = ""
+                    binding.piechart.invalidate()
+                }
+
+            })
+
             binding.piechart.invalidate()
         }
 
@@ -119,6 +155,7 @@ class MainActivity : AppCompatActivity() {
         transactionsViewModel.radarData.observe(this){radardata ->
             binding.radarchart.xAxis.valueFormatter = IndexAxisValueFormatter(GetRadarChartUseCase.categoryLabels)
             binding.radarchart.yAxis.valueFormatter = GetRadarChartUseCase.LargeValueFormatter()
+            binding.radarchart.description.text = ""
             binding.radarchart.data = radardata
             binding.radarchart.invalidate()
         }
@@ -181,7 +218,7 @@ class MainActivity : AppCompatActivity() {
 
             binding.minAmountSeekBar.setOnSeekBarChangeListener(object:SeekBar.OnSeekBarChangeListener{
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, p2: Boolean) {
-                    binding.minAmountSeekBarValue.text = decimalFormat.format(progress+minmax.first)
+                    binding.minAmountSeekBarValue.text = commaFormat.format(progress+minmax.first)
                 }
 
                 override fun onStartTrackingTouch(p0: SeekBar?) {
@@ -196,7 +233,7 @@ class MainActivity : AppCompatActivity() {
 
             binding.maxAmountSeekBar.setOnSeekBarChangeListener(object:SeekBar.OnSeekBarChangeListener{
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, p2: Boolean) {
-                    binding.maxAmountSeekBarValue.text = decimalFormat.format(progress+minmax.first)
+                    binding.maxAmountSeekBarValue.text = commaFormat.format(progress+minmax.first)
                 }
 
                 override fun onStartTrackingTouch(p0: SeekBar?) {
@@ -241,5 +278,15 @@ class MainActivity : AppCompatActivity() {
         }
         val formattedDate = DateFormatter.displayDateFormat.format(date)
         clickedButton.text = "$formattedDate"
+    }
+
+    private fun showOverlay() {
+        overlayDialog.show()
+    }
+
+    private fun hideOverlay() {
+        if (overlayDialog.isShowing) {
+            overlayDialog.dismiss()
+        }
     }
 }
