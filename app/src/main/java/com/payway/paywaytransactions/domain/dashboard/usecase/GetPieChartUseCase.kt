@@ -1,6 +1,8 @@
 package com.payway.paywaytransactions.domain.dashboard.usecase
 
 import android.graphics.Color
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -8,7 +10,9 @@ import com.payway.paywaytransactions.data.dashboard.model.RemoteTransaction
 import com.payway.paywaytransactions.domainCore.ColorProvider
 import kotlin.random.Random
 
-class GetPieChartUseCase {
+class GetPieChartUseCase(
+    private val pieDataSetFactory: GetPieChartUseCase.PieDataSetFactory
+) {
 
     fun execute(transactions: List<RemoteTransaction>): PieData {
         // Filtering transactions by category
@@ -27,7 +31,7 @@ class GetPieChartUseCase {
         }
 
         // Create a PieDataSet
-        val dataSet = PieDataSet(pieEntries, "Category Distribution by Amount")
+        val dataSet = pieDataSetFactory.createPieDataSet(pieEntries,"Category Distribution by Amount")
         // Customize colors as needed
         // Randomly select colors from the colorOptions list
         val random = Random
@@ -36,5 +40,19 @@ class GetPieChartUseCase {
         dataSet.colors = selectedColors
 
         return PieData(dataSet)
+    }
+
+    interface PieDataSetFactory {
+        fun createPieDataSet(pieEntries: MutableList<PieEntry>, label:String): PieDataSet
+    }
+
+    //Factory to inject to circumvent PieDataSet implementation details for unit tests
+    class DefaultPieDataSetFactory : PieDataSetFactory {
+        override fun createPieDataSet(
+            pieEntries: MutableList<PieEntry>,
+            label: String
+        ): PieDataSet {
+            return PieDataSet(pieEntries,label)
+        }
     }
 }

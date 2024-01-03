@@ -86,7 +86,7 @@ class TransactionsViewModel(
 
     }
 
-    private fun populateDefaultScreen(transactions: List<RemoteTransaction>) {
+     fun populateDefaultScreen(transactions: List<RemoteTransaction>) {
         _transactions = transactions
         //populate seek bars
         _seekBarMinMax.value = getSeekBarMinMaxValues(transactions)

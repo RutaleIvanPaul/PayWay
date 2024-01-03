@@ -1,4 +1,14 @@
 <resources>
     <string name="app_name">PayWay Transactions</string>
-    <string name="spinner_prompt">--Select a Type--</string>
+    <string name="spinner_prompt"> -- Select a Type -- </string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+    <string name="select_one_or_more_categories">Select one or more Categories</string>
+    <string name="min">Min</string>
+    <string name="max">Max</string>
+    <string name="transactions">Transactions</string>
+    <string name="total_amount">Total Amount</string>
+    <string name="withdraws">Withdraws</string>
+    <string name="deposits">Deposits</string>
+    <string name="_15_000_000">15,000,000</string>
 </resources>

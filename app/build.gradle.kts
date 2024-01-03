@@ -69,4 +69,11 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
 
+    //MockK
+    testImplementation("io.mockk:mockk:1.12.5")//for JVM 8
+
+    //For Test Rules
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2")
+
 }

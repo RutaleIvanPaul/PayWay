@@ -1,6 +1,7 @@
 package com.payway.paywaytransactions
 
 import android.app.Application
+import com.github.mikephil.charting.data.LineDataSet
 import com.payway.paywaytransactions.app.dashboard.presenter.TransactionsViewModel
 import com.payway.paywaytransactions.data.dashboard.TransactionsAPI
 import com.payway.paywaytransactions.data.dashboard.repository.TransactionsRemoteDataSource
@@ -23,11 +24,15 @@ class App: Application() {
     private val getTransactionsUseCase: GetTransactionsUseCase =
         GetTransactionsUseCase(transactionsRemoteDataSource)
 
+    val lineDataSetFactory: GetLineChartUseCase.LineDataSetFactory = GetLineChartUseCase.DefaultLineDataSetFactory()
+
     private val getLineChartUseCase: GetLineChartUseCase =
-        GetLineChartUseCase()
+        GetLineChartUseCase(lineDataSetFactory)//work around Color.rgb
+
+    val pieDataSetFactory:GetPieChartUseCase.PieDataSetFactory = GetPieChartUseCase.DefaultPieDataSetFactory()
 
     private val getPieChartUseCase:GetPieChartUseCase =
-        GetPieChartUseCase()
+        GetPieChartUseCase(pieDataSetFactory)
 
     private val getRadarChartUseCase:GetRadarChartUseCase =
         GetRadarChartUseCase()

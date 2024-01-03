@@ -67,8 +67,8 @@ class MainActivity : AppCompatActivity() {
 
         binding.clearFilters.setOnClickListener {
             //reset filters and fetch all data
-            binding.startDateButton.text = ""
-            binding.endDateButton.text = ""
+            binding.startDateButton.text = getString(R.string.start_date)
+            binding.endDateButton.text = getString(R.string.end_date)
             binding.typeSpinner.setSelection(0)
             binding.minAmountSeekBar.progress = 0
             binding.maxAmountSeekBar.progress = 0

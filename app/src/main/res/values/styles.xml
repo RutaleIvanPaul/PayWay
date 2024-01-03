@@ -19,4 +19,23 @@
         <item name="android:textColor">#b0b0b0</item>
     </style>
 
+    <style name="DefaultButton" >
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <!--        <item name="android:padding">8dp</item>-->
+        <item name="android:layout_margin">4dp</item>
+    </style>
+
+    <style name="TransparentButton" >
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:background">@drawable/transparent_button</item>
+<!--        <item name="android:padding">8dp</item>-->
+        <item name="android:layout_margin">4dp</item>
+    </style>
+
+    <style name="NonTransparentButton" >
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:background">@drawable/non_transparent_button</item>
+    </style>
+
+
 </resources>
