@@ -29,8 +29,10 @@ class App: Application() {
     private val getLineChartUseCase: GetLineChartUseCase =
         GetLineChartUseCase(lineDataSetFactory)//work around Color.rgb
 
+    val pieDataSetFactory:GetPieChartUseCase.PieDataSetFactory = GetPieChartUseCase.DefaultPieDataSetFactory()
+
     private val getPieChartUseCase:GetPieChartUseCase =
-        GetPieChartUseCase()
+        GetPieChartUseCase(pieDataSetFactory)
 
     private val getRadarChartUseCase:GetRadarChartUseCase =
         GetRadarChartUseCase()

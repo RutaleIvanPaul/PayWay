@@ -28,10 +28,7 @@ class GetLineChartUseCase(
 
             val entries = entriesMap.entries.map { Entry(it.key, it.value) }
 
-//            val lineDataSet = LineDataSet(entries, lineDefinition.label)
             val lineDataSet = lineDataSetFactory.createLineDataSet(entries,lineDefinition.label)
-//            lineDataSet.values = entries
-//            lineDataSet.label = lineDefinition.label
             lineDataSet.color = lineDefinition.color
             lineDataSet.setDrawValues(false)
             lineDataSets.add(lineDataSet)
@@ -52,6 +49,7 @@ class GetLineChartUseCase(
         fun createLineDataSet(yVals:List<Entry>,label:String): LineDataSet
     }
 
+    //Factory to inject to circumvent LineDataSet implementation details for unit tests
     class DefaultLineDataSetFactory : LineDataSetFactory {
         override fun createLineDataSet(yVals: List<Entry>, label: String): LineDataSet {
             return LineDataSet(yVals,label)

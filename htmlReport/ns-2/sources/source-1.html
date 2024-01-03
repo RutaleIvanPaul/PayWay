@@ -1,0 +1,339 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > TransactionsViewModel</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.payway.paywaytransactions.app.dashboard.presenter</a>
+</div>
+
+<h1>Coverage Summary for Class: TransactionsViewModel (com.payway.paywaytransactions.app.dashboard.presenter)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TransactionsViewModel</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/127)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">TransactionsViewModel$getTransactions$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/135)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.payway.paywaytransactions.app.dashboard.presenter
+&nbsp;
+&nbsp;import android.graphics.Color
+&nbsp;import android.util.Log
+&nbsp;import androidx.lifecycle.LiveData
+&nbsp;import androidx.lifecycle.MutableLiveData
+&nbsp;import androidx.lifecycle.ViewModel
+&nbsp;import androidx.lifecycle.viewModelScope
+&nbsp;import com.github.mikephil.charting.data.LineData
+&nbsp;import com.github.mikephil.charting.data.PieData
+&nbsp;import com.github.mikephil.charting.data.RadarData
+&nbsp;import com.payway.paywaytransactions.data.dashboard.model.MyResult
+&nbsp;import com.payway.paywaytransactions.data.dashboard.model.RemoteTransaction
+&nbsp;import com.payway.paywaytransactions.domain.dashboard.model.LineDefinition
+&nbsp;import com.payway.paywaytransactions.domain.dashboard.usecase.GetLineChartUseCase
+&nbsp;import com.payway.paywaytransactions.domain.dashboard.usecase.GetPieChartUseCase
+&nbsp;import com.payway.paywaytransactions.domain.dashboard.usecase.GetRadarChartUseCase
+&nbsp;import com.payway.paywaytransactions.domain.dashboard.usecase.GetTransactionsUseCase
+&nbsp;import com.payway.paywaytransactions.domain.dashboard.util.FilterCriteria
+&nbsp;import com.payway.paywaytransactions.domainCore.ColorProvider
+&nbsp;import com.payway.paywaytransactions.domainCore.decimalFormat
+&nbsp;import kotlinx.coroutines.launch
+&nbsp;import java.util.Locale.Category
+&nbsp;import kotlin.random.Random
+&nbsp;
+&nbsp;
+&nbsp;class TransactionsViewModel(
+<b class="nc">&nbsp;    private val getTransactionsUseCase: GetTransactionsUseCase,</b>
+<b class="nc">&nbsp;    private val getLineChartUseCase: GetLineChartUseCase,</b>
+<b class="nc">&nbsp;    private val getPieChartUseCase: GetPieChartUseCase,</b>
+<b class="nc">&nbsp;    private val getRadarChartUseCase: GetRadarChartUseCase</b>
+<b class="nc">&nbsp;) : ViewModel() {</b>
+<b class="nc">&nbsp;    private val _linedata = MutableLiveData&lt;LineData&gt;()</b>
+<b class="nc">&nbsp;    val linedata: LiveData&lt;LineData&gt; get() = _linedata</b>
+&nbsp;
+<b class="nc">&nbsp;    private val _pieData = MutableLiveData&lt;PieData&gt;()</b>
+<b class="nc">&nbsp;    val pieData:LiveData&lt;PieData&gt; get() = _pieData</b>
+&nbsp;
+<b class="nc">&nbsp;    private val _radarData = MutableLiveData&lt;RadarData&gt;()</b>
+<b class="nc">&nbsp;    val radarData:LiveData&lt;RadarData&gt; get() = _radarData</b>
+&nbsp;
+<b class="nc">&nbsp;    private val _totalTransactions = MutableLiveData&lt;String&gt;()</b>
+<b class="nc">&nbsp;    val totalTransactions: LiveData&lt;String&gt; get() = _totalTransactions</b>
+&nbsp;
+<b class="nc">&nbsp;    private val _totalAmount = MutableLiveData&lt;String&gt;()</b>
+<b class="nc">&nbsp;    val totalAmount: LiveData&lt;String&gt; get() = _totalAmount</b>
+&nbsp;
+<b class="nc">&nbsp;    private val _withdrawAmount = MutableLiveData&lt;String&gt;()</b>
+<b class="nc">&nbsp;    val withdrawAmount: LiveData&lt;String&gt; get() = _withdrawAmount</b>
+&nbsp;
+<b class="nc">&nbsp;    private val _depositAmount = MutableLiveData&lt;String&gt;()</b>
+<b class="nc">&nbsp;    val depositAmount: LiveData&lt;String&gt; get() = _depositAmount</b>
+&nbsp;
+&nbsp;    //In Memory Hold of Transactions
+&nbsp;    //Should be improved with secondary storage
+<b class="nc">&nbsp;    private var _transactions:List&lt;RemoteTransaction&gt; = listOf()</b>
+&nbsp;
+<b class="nc">&nbsp;    private val _distinctCategories = MutableLiveData&lt;List&lt;String&gt;&gt;()</b>
+<b class="nc">&nbsp;    val distinctCategories:LiveData&lt;List&lt;String&gt;&gt; get() = _distinctCategories</b>
+&nbsp;
+<b class="nc">&nbsp;    private val _distinctTypes = MutableLiveData&lt;List&lt;String&gt;&gt;()</b>
+<b class="nc">&nbsp;    val distinctTypes:LiveData&lt;List&lt;String&gt;&gt; get() = _distinctTypes</b>
+&nbsp;
+<b class="nc">&nbsp;    private val _seekBarMinMax = MutableLiveData&lt;Pair&lt;Double,Double&gt;&gt;()</b>
+<b class="nc">&nbsp;    val seekBarMinMax:MutableLiveData&lt;Pair&lt;Double,Double&gt;&gt; get() = _seekBarMinMax</b>
+&nbsp;
+&nbsp;
+&nbsp;    fun getTransactions() {
+<b class="nc">&nbsp;        if (_transactions.isEmpty()) {</b>
+&nbsp;            //If Local is empty
+<b class="nc">&nbsp;            viewModelScope.launch {</b>
+<b class="nc">&nbsp;                val result = getTransactionsUseCase.execute()</b>
+<b class="nc">&nbsp;                when (result) {</b>
+<b class="nc">&nbsp;                    is MyResult.Success -&gt; {</b>
+<b class="nc">&nbsp;                        populateDefaultScreen(result.data)</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                    is MyResult.Error -&gt; {</b>
+<b class="nc">&nbsp;                        result.exception.message?.let { Log.d(&quot;Transactions&quot;, it) }</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+&nbsp;        else{
+<b class="nc">&nbsp;            populateDefaultScreen(_transactions)</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;     fun populateDefaultScreen(transactions: List&lt;RemoteTransaction&gt;) {
+<b class="nc">&nbsp;        _transactions = transactions</b>
+&nbsp;        //populate seek bars
+<b class="nc">&nbsp;        _seekBarMinMax.value = getSeekBarMinMaxValues(transactions)</b>
+&nbsp;        //populate categories spinner
+<b class="nc">&nbsp;        _distinctCategories.value = getDistinctCategories(transactions)</b>
+&nbsp;        //populate types spinner
+<b class="nc">&nbsp;        _distinctTypes.value = getDistinctTypes(transactions)</b>
+&nbsp;        //populate charts
+<b class="nc">&nbsp;        getDefaultLineChart(transactions)</b>
+<b class="nc">&nbsp;        getPieChart(transactions)</b>
+<b class="nc">&nbsp;        getRadarChart(transactions)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private fun getLabel(filterCriteria: FilterCriteria): String {
+<b class="nc">&nbsp;        var label = &quot;&quot;</b>
+<b class="nc">&nbsp;        filterCriteria.type?.let {</b>
+<b class="nc">&nbsp;            label += &quot;${it}s&quot;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        filterCriteria.minAmount?.let {</b>
+<b class="nc">&nbsp;            label += &quot;Min Amount: ${decimalFormat.format(it)} &quot;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        filterCriteria.maxAmount?.let {</b>
+<b class="nc">&nbsp;            label += &quot;Max Amount: ${decimalFormat.format(it)} &quot;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        filterCriteria.startDate?.let {</b>
+<b class="nc">&nbsp;            label += &quot;Start Date: $it &quot;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        filterCriteria.endDate?.let {</b>
+<b class="nc">&nbsp;            label += &quot;End Date: $it &quot;</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        filterCriteria.categories?.let {</b>
+<b class="nc">&nbsp;            if (it.size &gt; 0) {</b>
+<b class="nc">&nbsp;                label += &quot;Category: &quot;</b>
+<b class="nc">&nbsp;                it.forEach { category -&gt;</b>
+<b class="nc">&nbsp;                    label += &quot;$category &quot;</b>
+<b class="nc">&nbsp;                }</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return label</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun getFilteredTransactions(filterCriteria: FilterCriteria){
+<b class="nc">&nbsp;        val filteredTransactions = filterCriteria.getFilteredData(_transactions)</b>
+<b class="nc">&nbsp;        val label = getLabel(filterCriteria)</b>
+<b class="nc">&nbsp;        getLineChart(filteredTransactions,label)</b>
+<b class="nc">&nbsp;        getPieChart(filteredTransactions)</b>
+<b class="nc">&nbsp;        getRadarChart(filteredTransactions)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun getLineChart(transactions: List&lt;RemoteTransaction&gt;, label: String) {
+<b class="nc">&nbsp;        summarise(transactions)</b>
+<b class="nc">&nbsp;        _linedata.value = getLineChartUseCase.execute(</b>
+<b class="nc">&nbsp;            listOf(</b>
+<b class="nc">&nbsp;                LineDefinition(</b>
+<b class="nc">&nbsp;                    transactions,</b>
+<b class="nc">&nbsp;                    ColorProvider.getNextColor(),</b>
+<b class="nc">&nbsp;                    label</b>
+&nbsp;                )
+&nbsp;            )
+&nbsp;        )
+&nbsp;    }
+&nbsp;
+&nbsp;    fun getPieChart(transactions: List&lt;RemoteTransaction&gt;){
+<b class="nc">&nbsp;        _pieData.value = getPieChartUseCase.execute(transactions)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    fun getRadarChart(transactions: List&lt;RemoteTransaction&gt;){
+<b class="nc">&nbsp;        _radarData.value = getRadarChartUseCase.execute(transactions)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    private fun summarise(transactions: List&lt;RemoteTransaction&gt;) {
+<b class="nc">&nbsp;        _totalTransactions.value = decimalFormat.format(transactions.size)</b>
+<b class="nc">&nbsp;        _totalAmount.value = decimalFormat.format(transactions.sumOf { it.Amount })</b>
+<b class="nc">&nbsp;        _depositAmount.value = decimalFormat.format(transactions.filter { it.Type == &quot;Deposit&quot; }.sumOf { it.Amount })</b>
+<b class="nc">&nbsp;        _withdrawAmount.value = decimalFormat.format(transactions.filter { it.Type == &quot;Withdraw&quot; }.sumOf { it.Amount })</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    private fun getDefaultLineChart(transactions: List&lt;RemoteTransaction&gt;) {
+<b class="nc">&nbsp;        summarise(transactions)</b>
+<b class="nc">&nbsp;        _linedata.value = getLineChartUseCase.execute(</b>
+<b class="nc">&nbsp;            listOf(</b>
+<b class="nc">&nbsp;                LineDefinition(</b>
+<b class="nc">&nbsp;                    FilterCriteria(</b>
+<b class="nc">&nbsp;                        &quot;Deposit&quot;,</b>
+<b class="nc">&nbsp;                        null,</b>
+<b class="nc">&nbsp;                        null,</b>
+<b class="nc">&nbsp;                        arrayListOf(),</b>
+<b class="nc">&nbsp;                        null,</b>
+<b class="nc">&nbsp;                        null</b>
+<b class="nc">&nbsp;                    ).getFilteredData(transactions),</b>
+<b class="nc">&nbsp;                    ColorProvider.getNextColor(),</b>
+<b class="nc">&nbsp;                    &quot;Deposits&quot;</b>
+&nbsp;                ),
+<b class="nc">&nbsp;                LineDefinition(</b>
+<b class="nc">&nbsp;                    FilterCriteria(</b>
+<b class="nc">&nbsp;                        &quot;Withdraw&quot;,</b>
+<b class="nc">&nbsp;                        null,</b>
+<b class="nc">&nbsp;                        null,</b>
+<b class="nc">&nbsp;                        arrayListOf(),</b>
+<b class="nc">&nbsp;                        null,</b>
+<b class="nc">&nbsp;                        null</b>
+<b class="nc">&nbsp;                    ).getFilteredData(transactions),</b>
+<b class="nc">&nbsp;                    ColorProvider.getNextColor(),</b>
+<b class="nc">&nbsp;                    &quot;Withdraws&quot;</b>
+&nbsp;                )
+&nbsp;            )
+&nbsp;        )
+&nbsp;    }
+&nbsp;
+&nbsp;    fun getDistinctCategories(transactions: List&lt;RemoteTransaction&gt;):List&lt;String&gt; =
+<b class="nc">&nbsp;        transactions.map { it.Category }.distinct()</b>
+&nbsp;
+&nbsp;    fun getDistinctTypes(transactions: List&lt;RemoteTransaction&gt;):List&lt;String&gt; =
+<b class="nc">&nbsp;        transactions.map { it.Type }.distinct()</b>
+&nbsp;
+&nbsp;    fun getSeekBarMinMaxValues(transactions: List&lt;RemoteTransaction&gt;):Pair&lt;Double,Double&gt; =
+<b class="nc">&nbsp;        Pair(transactions.map { it.Amount }.min(),transactions.map { it.Amount }.max())</b>
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-01-02 15:15</div>
+</div>
+</body>
+</html>
