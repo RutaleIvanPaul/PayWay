@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.RadarData
+import com.payway.paywaytransactions.R
 import com.payway.paywaytransactions.data.dashboard.model.MyResult
 import com.payway.paywaytransactions.data.dashboard.model.RemoteTransaction
 import com.payway.paywaytransactions.domain.dashboard.model.LineDefinition
@@ -114,8 +115,10 @@ class TransactionsViewModel(
         filterCriteria.endDate?.let {
             label += "End-Date||"
         }
-        filterCriteria.categories?.let {
-            label += "Category||"
+        filterCriteria.categories.let {
+            if (it.size > 0) {
+                label += "Category||"
+            }
         }
 
         val splits = label.split("||")

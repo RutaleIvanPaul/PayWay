@@ -1,7 +1,6 @@
 package com.payway.paywaytransactions
 
 import android.app.Application
-import com.github.mikephil.charting.data.LineDataSet
 import com.payway.paywaytransactions.app.dashboard.presenter.TransactionsViewModel
 import com.payway.paywaytransactions.data.dashboard.TransactionsAPI
 import com.payway.paywaytransactions.data.dashboard.repository.TransactionsRemoteDataSource
@@ -9,13 +8,16 @@ import com.payway.paywaytransactions.domain.dashboard.usecase.GetLineChartUseCas
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetPieChartUseCase
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetRadarChartUseCase
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetTransactionsUseCase
-import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
+/**The app's entry point. It will provide resources like appcontext as well as
+ * be the declaration/implementation point for the manual dependencies for the rest of the app.
+ *
+ */
 class App: Application() {
 
     private val transactionsAPI: TransactionsAPI = createTransactionsAPI()
@@ -24,6 +26,8 @@ class App: Application() {
     private val getTransactionsUseCase: GetTransactionsUseCase =
         GetTransactionsUseCase(transactionsRemoteDataSource)
 
+    /**Establishing Factories for LineDataSets to be able to inject them into the usecase.
+     * This is to minimise the amount of mocking needed for this object in the unit tests**/
     val lineDataSetFactory: GetLineChartUseCase.LineDataSetFactory = GetLineChartUseCase.DefaultLineDataSetFactory()
 
     private val getLineChartUseCase: GetLineChartUseCase =
@@ -43,6 +47,7 @@ class App: Application() {
     private fun createTransactionsAPI(): TransactionsAPI =
         createRetrofit().create(TransactionsAPI::class.java)
 
+    /**Creating the Retrofit Instance along with the Logging Interceptor **/
     private fun createRetrofit(): Retrofit {
 
         val loggingInterceptor = HttpLoggingInterceptor().apply {

@@ -1,15 +1,20 @@
 package com.payway.paywaytransactions.domainCore
 
+import com.payway.paywaytransactions.App
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Singleton to be used for formatting dates especially for display across the app
+ */
 object DateFormatter {
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    // Use context.resources.configuration.locales[0] to get the current locale
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", App.getInstance().applicationContext.resources.configuration.locales[0])
 
-    val displayDateFormat = SimpleDateFormat("dd MMM yyy", Locale.getDefault())
+    val displayDateFormat = SimpleDateFormat("dd MMM yyy", App.getInstance().applicationContext.resources.configuration.locales[0])
 
     fun formatStringToDate(dateString: String): Date {
         return dateString.let {

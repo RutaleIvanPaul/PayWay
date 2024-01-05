@@ -47,7 +47,7 @@ class GetLineChartUseCaseTest {
         every { ColorProvider.getNextColor() } returns Color.BLUE // Mock the color to be returned
 
         val lineDataSet = mockk<LineDataSet>(relaxUnitFun = true)
-        every { lineDataSet.setColor(any()) } just Runs // Mock setColor method
+        every { lineDataSet.color = any() } just Runs // Mock setColor method
         every { lineDataSet.setDrawValues(any()) } just Runs // Mock setDrawValues method
         every { lineDataSet.yMax } returns 150.0F
         every { lineDataSet.yMin } returns 100.0F

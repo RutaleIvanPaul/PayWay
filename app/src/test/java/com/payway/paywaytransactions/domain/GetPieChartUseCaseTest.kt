@@ -2,11 +2,8 @@ package com.payway.paywaytransactions.domain
 
 import android.graphics.Color
 import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
-import com.payway.paywaytransactions.domain.dashboard.usecase.GetLineChartUseCase
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetPieChartUseCase
 import com.payway.paywaytransactions.domainCore.ColorProvider
 import com.payway.paywaytransactions.expectedTransactions
@@ -29,7 +26,7 @@ class GetPieChartUseCaseTest {
 
 
         val pieDataSet = mockk<PieDataSet>(relaxUnitFun = true)
-        every { pieDataSet.setColor(any()) } just Runs // Mock setColor method
+        every { pieDataSet.color = any() } just Runs // Mock setColor method
         every { pieDataSet.setDrawValues(any()) } just Runs // Mock setDrawValues method
         every { pieDataSet.yMax } returns 150.0F
         every { pieDataSet.yMin } returns 100.0F

@@ -8,12 +8,20 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet
 import com.payway.paywaytransactions.data.dashboard.model.RemoteTransaction
 import com.payway.paywaytransactions.domainCore.ColorProvider
-import kotlin.random.Random
 
+/**Use Case concerned with the logic around taking transactions and preparing them for
+ * display in the Radar chart.
+ **/
 class GetRadarChartUseCase {
     companion object{
         var categoryLabels:Array<String> = arrayOf()
     }
+    /**
+     *
+     *Takes transactions, processes categories, splits transactions into deposits and withdraws
+     * to create entries for the radar chart
+     *
+     */
     fun execute(transactions: List<RemoteTransaction>):RadarData{
         //get distinct categories for the axes
         val categories = transactions.map { it.Category }.distinct()
@@ -27,12 +35,12 @@ class GetRadarChartUseCase {
         categories.forEach { category ->
             val sumAmountDeposit = transactions
                 .filter { it.Category == category && it.Type == "Deposit" }
-                .sumOf { it.Amount.toDouble() }
+                .sumOf { it.Amount }
                 .toFloat()
 
             val sumAmountWithdraw = transactions
                 .filter { it.Category == category && it.Type == "Withdraw" }
-                .sumOf { it.Amount.toDouble() }
+                .sumOf { it.Amount }
                 .toFloat()
 
             radarEntriesDeposit.add(RadarEntry(sumAmountDeposit, category))
@@ -59,6 +67,9 @@ class GetRadarChartUseCase {
         return RadarData(radarDataSets)
     }
 
+    /**
+     * To format the large amount values displayed on the radar chart
+     */
     class LargeValueFormatter : ValueFormatter() {
 
         override fun getAxisLabel(value: Float, axis: AxisBase?): String {
@@ -74,6 +85,7 @@ class GetRadarChartUseCase {
             var num = value
             var index = 0
 
+            //move along the suffixes in steps of 1000 to attach the proper suffix to the figure.
             while (num >= 1000 && index < suffixes.size - 1) {
                 num /= 1000
                 index++

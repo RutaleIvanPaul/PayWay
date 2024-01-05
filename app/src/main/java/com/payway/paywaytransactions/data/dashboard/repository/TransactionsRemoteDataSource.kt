@@ -4,6 +4,10 @@ import com.payway.paywaytransactions.data.dashboard.TransactionsAPI
 import com.payway.paywaytransactions.data.dashboard.model.MyResult
 import com.payway.paywaytransactions.data.dashboard.model.RemoteTransaction
 
+/**
+ * An implementation of the repository concerned with fetching transactions
+ * from the API
+ */
 class TransactionsRemoteDataSource(
     private val transactionsAPI: TransactionsAPI
 ):TransactionsRepository {

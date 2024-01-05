@@ -1,10 +1,7 @@
 package com.payway.paywaytransactions.data.dashboard.model
 
-import com.google.gson.annotations.SerializedName
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-
+/**To be the data class to model transactions received from the API response and for purposes
+of this demo app, to be used to hold transactions within the rest of the app.**/
 data class RemoteTransaction(
     val Amount: Double,
     val Category: String,

@@ -1,8 +1,5 @@
 package com.payway.paywaytransactions.domain.dashboard.usecase
 
-import android.graphics.Color
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -10,12 +7,18 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.payway.paywaytransactions.data.dashboard.model.RemoteTransaction
 import com.payway.paywaytransactions.domainCore.ColorProvider
 import com.payway.paywaytransactions.domainCore.decimalFormat
-import kotlin.random.Random
 
+/**Use Case concerned with the logic around taking transactions and preparing them for
+* display in the Pie chart.
+ **/
 class GetPieChartUseCase(
-    private val pieDataSetFactory: GetPieChartUseCase.PieDataSetFactory
+    private val pieDataSetFactory: PieDataSetFactory
 ) {
-
+    /**
+     * Takes transactions, processes categories and
+     * their percentage amount vs other transactions
+     * to create entries for the pie chart
+     */
     fun execute(transactions: List<RemoteTransaction>): PieData {
         // Filtering transactions by category
         val categories = transactions.map { it.Category }.distinct()
@@ -34,11 +37,11 @@ class GetPieChartUseCase(
 
         // Create a PieDataSet
         val dataSet = pieDataSetFactory.createPieDataSet(pieEntries,"")
-        dataSet.setValueFormatter(object : ValueFormatter() {
+        dataSet.valueFormatter = object : ValueFormatter() {
             override fun getFormattedValue(value: Float): String {
                 return "${decimalFormat.format(value)}%" // Attach % to displayed values
             }
-        })
+        }
         // Randomly select colors from the colorOptions list
         val selectedColors = ColorProvider.getColors(pieEntries.size)
 
@@ -47,6 +50,9 @@ class GetPieChartUseCase(
         return PieData(dataSet)
     }
 
+    /**
+     * Define the Factory interface to decouple the creation of PieDataSet from GetPieChartUseCase
+     */
     interface PieDataSetFactory {
         fun createPieDataSet(pieEntries: MutableList<PieEntry>, label:String): PieDataSet
     }
