@@ -7,14 +7,11 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.RadarData
 import com.payway.paywaytransactions.app.dashboard.presenter.TransactionsViewModel
-import com.payway.paywaytransactions.data.dashboard.model.MyResult
-import com.payway.paywaytransactions.data.dashboard.model.RemoteTransaction
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetLineChartUseCase
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetPieChartUseCase
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetRadarChartUseCase
 import com.payway.paywaytransactions.domain.dashboard.usecase.GetTransactionsUseCase
 import com.payway.paywaytransactions.domainCore.ColorProvider
-import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.confirmVerified
 import io.mockk.every
@@ -63,6 +60,8 @@ class TransactionsViewModelTest {
         Dispatchers.setMain(testCoroutineDispatcher)
 
         transactionsViewModel.linedata.observeForever(lineDataObserver)
+        transactionsViewModel.pieData.observeForever(pieDataObserver)
+        transactionsViewModel.radarData.observeForever(radarDataObserver)
     }
 
     @After
@@ -88,5 +87,38 @@ class TransactionsViewModelTest {
         // Verify that linedata was updated with LineData
         verify { lineDataObserver.onChanged(any()) }
         confirmVerified(lineDataObserver)
+    }
+
+
+    @Test
+    fun `test getPieChart updates pieData livedata`() = testCoroutineDispatcher.runBlockingTest {
+        // Arrange
+        every { getPieChartUseCaseMock.execute(any()) } returns PieData() // Mock the PieChartUseCase response
+
+        // Act
+        transactionsViewModel.getPieChart(emptyList()) // Call the function that updates pieData
+
+        // Assert
+        coVerify { getPieChartUseCaseMock.execute(any()) } // Verify that the PieChartUseCase was called
+
+        // Verify that pieData was updated with PieData
+        verify { pieDataObserver.onChanged(any()) }
+        confirmVerified(pieDataObserver)
+    }
+
+    @Test
+    fun `test getRadarChart updates radarData livedata`() = testCoroutineDispatcher.runBlockingTest {
+        // Arrange
+        every { getRadarChartUseCaseMock.execute(any()) } returns RadarData() // Mock the RadarChartUseCase response
+
+        // Act
+        transactionsViewModel.getRadarChart(emptyList()) // Call the function that updates radarData
+
+        // Assert
+        coVerify { getRadarChartUseCaseMock.execute(any()) } // Verify that the RadarChartUseCase was called
+
+        // Verify that radarData was updated with RadarData
+        verify { radarDataObserver.onChanged(any()) }
+        confirmVerified(radarDataObserver)
     }
 }
