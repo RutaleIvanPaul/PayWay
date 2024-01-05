@@ -1,6 +1,10 @@
 package com.payway.paywaytransactions.domainCore
 
 import android.graphics.Color
+/**
+ * Color Provider is a collection of colors to be used especially with the charts. It also
+ * provides methods to get the colors with randomisation for a more interesting UI experience.
+ */
 object ColorProvider {
     //Provider to deal with repeated colors
     val colorOptions  = listOf(

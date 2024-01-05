@@ -2,6 +2,7 @@ package com.payway.paywaytransactions.app.dashboard.view
 
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MotionEvent
@@ -74,6 +75,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.clearFilters.setOnClickListener {
+            transactionsViewModel.getTransactions()
             //reset filters and fetch all data
             binding.startDateButton.text = getString(R.string.start_date)
             binding.endDateButton.text = getString(R.string.end_date)
@@ -85,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 
             binding.clearFilters.visibility = View.GONE
 
-            transactionsViewModel.getTransactions()
+            filterCriteria.reset()
         }
 
         binding.applyFiltersButton.setOnClickListener {
@@ -115,7 +117,11 @@ class MainActivity : AppCompatActivity() {
             binding.linechart.setScaleEnabled(true)
             binding.linechart.isHighlightPerDragEnabled = true
             binding.linechart.isHighlightPerTapEnabled = true
-            binding.linechart.description.text = ""
+            binding.linechart.description.text = getString(R.string.graph_shows_total_amount)
+            // Move the description below the legend by adjusting offsets
+            binding.linechart.description.yOffset = -22f
+            binding.linechart.legend.yOffset = 22f
+            binding.linechart.description.textSize = 11f
             binding.linechart.animateX(1000 )
 
             hideOverlay()
@@ -136,7 +142,7 @@ class MainActivity : AppCompatActivity() {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     e.let {
                         binding.piechart.centerText = "${(e as PieEntry).label} \n " +
-                                "${decimalFormat.format((e as PieEntry).value)}%"
+                                "${decimalFormat.format(e.value)}%"
                         binding.piechart.invalidate()
                     }
                 }
@@ -226,7 +232,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    filterCriteria.minAmount = seekBar?.progress?.plus(minmax.first)?.toDouble()
+                    filterCriteria.minAmount = seekBar?.progress?.plus(minmax.first)
                 }
 
             })
@@ -241,7 +247,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    filterCriteria.maxAmount = seekBar?.progress?.plus(minmax.first)?.toDouble()
+                    filterCriteria.maxAmount = seekBar?.progress?.plus(minmax.first)
                 }
 
             })

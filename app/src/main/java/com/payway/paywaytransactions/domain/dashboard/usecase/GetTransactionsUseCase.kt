@@ -3,8 +3,10 @@ package com.payway.paywaytransactions.domain.dashboard.usecase
 import com.payway.paywaytransactions.data.dashboard.model.MyResult
 import com.payway.paywaytransactions.data.dashboard.model.RemoteTransaction
 import com.payway.paywaytransactions.data.dashboard.repository.TransactionsRepository
-import io.reactivex.Single
 
+/**
+ * Use case concerned with the retrieval of transactions from the Repository
+ */
 class GetTransactionsUseCase(
     private val transactionsRepository: TransactionsRepository
 ) {

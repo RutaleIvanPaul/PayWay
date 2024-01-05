@@ -19,13 +19,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/captionTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/progressBar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
-        android:text="Initializing..."
+        android:text="@string/initializing"
         android:textColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
