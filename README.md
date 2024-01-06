@@ -55,7 +55,51 @@ This Android application serves as a standalone showcase for an analytics dashbo
 
 1. Clone the repository to your local machine.
 2. Open the main branch in Android Studio.
-3. Build and run the application on an emulator or physical device.
+3. For you to be able to interface with an API, you will need to set up a mock server with Postman or a tool of your choice.
+      - Make sure the payload is structured as expected by the application.
+
+        ```json
+        [
+            {
+            "TxFinish": "2023-10-01 08:33:08",
+            "Amount": 15700,
+            "Type": "Deposit",
+            "Service": "GOtv",
+            "Category": "TV"
+            },
+            {
+            "TxFinish": "2023-10-01 08:33:57",
+            "Amount": 2000,
+            "Type": "Deposit",
+            "Service": "MTN Uganda",
+            "Category": "Airtime"
+            },
+            {
+            "TxFinish": "2023-10-01 08:35:10",
+            "Amount": 1000,
+            "Type": "Deposit",
+            "Service": "Airtel Internet",
+            "Category": "Internet"
+            }
+         ]
+        ```
+      - Change the Base URL in the App.kt file to match the one of your server.
+        ```Kotlin
+         /**Creating the Retrofit Instance along with the Logging Interceptor **/
+         private fun createRetrofit(): Retrofit {
+
+              val loggingInterceptor = HttpLoggingInterceptor().apply {
+               level = HttpLoggingInterceptor.Level.BODY // Set the desired log level
+           }
+   
+           return Retrofit.Builder()
+               .baseUrl("https://45877c7d-518f-4fb9-9ed5-382027346e41.mock.pstmn.io/")
+               .addConverterFactory(GsonConverterFactory.create())
+               .client(OkHttpClient.Builder().addInterceptor(loggingInterceptor).build())
+               .build()
+        }
+        ```
+5. Build and run the application on an emulator or physical device.
 
 ## Additional Notes
 
